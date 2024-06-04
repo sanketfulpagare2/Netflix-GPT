@@ -6,7 +6,7 @@ const MovieList = ({title,movies}) => {
   if(!movies)
     return;
  
-  console.log(movies);
+  
   return (
 
     <div className='py-4'>
