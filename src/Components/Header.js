@@ -61,15 +61,15 @@ const handleLanguageChange=(e)=>{
   
   return (
     //Netflix logo
-    <div  className="px-2 absolute z-10 w-full flex justify-between bg-gradient-to-b from-gray-950 to-transparent">
+    <div  className="px-2 absolute z-10 w-full flex flex-col md:flex-row justify-between bg-gradient-to-b from-gray-950 to-transparent">
       <div>
-      <img className="w-48 brightness-110  "
+      <img className="w-48 brightness-110 mx-auto  "
         src={LOGO}
         alt="Logo"
       />
     
        </div>
-      {user &&  <div className="flex items-center">
+      {user &&  <div className="flex items-center justify-center">
 
           {showGptSearch &&
             <select className="  p-2  bg-gray-900 text-white " onChange={handleLanguageChange}>
