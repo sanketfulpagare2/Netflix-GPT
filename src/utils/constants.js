@@ -17,4 +17,4 @@ export const USER_AVATAR =
 
   export const SUPPORTED_LANGUAGE = [{identifire :"en", name :"English"},{identifire :"hindi", name :"Hindi"},{identifire :"spanish", name :"Spanish"}]
 
-  export const OPENAI_API="my open Ai key"
+  
