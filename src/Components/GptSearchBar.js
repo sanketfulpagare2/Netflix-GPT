@@ -1,13 +1,15 @@
 import React, { useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import lang from "../utils/languageConstants";
-import openai from "../utils/openai";
+// import openai from "../utils/openai";
 import { API_OPTIONS } from "../utils/constants";
 import { addGptMovieResults } from "../utils/gptSlice";
+import { GoogleGenerativeAI } from "@google/generative-ai";
 
 const GptSearchBar = () => {
   const searchText = useRef(null);
   const dispatch=useDispatch();
+  const genAI = new GoogleGenerativeAI(process.env.REACT_APP_GEMINI_KEY);
 
   const searchMovieTMDB=async(movie)=>{
     const data=await fetch("https://api.themoviedb.org/3/search/movie?query="+ movie+"&include_adult=false&language=en-US&page=1", API_OPTIONS);
@@ -15,14 +17,6 @@ const GptSearchBar = () => {
     const json=await data.json();
      return json.results;
   }
-
-
-
-
-
-
-
-
 
 
 
@@ -42,12 +36,33 @@ const GptSearchBar = () => {
     // console.log(gptResults?.choices[0]?.message?.content);
     // const gptMovies=gptResults?.choices[0]?.message?.content.split(",");
 
+    const model = genAI.getGenerativeModel({ model: "gemini-pro" });
 
-    const dummyMovies=["Raaz","Hera Pheri","Chupke Chupke","Jaane Bhi Do Yaaro","Padosan"]
+    const gptQuery =
+      "Act as movie recommendation system and suggest some movies for the query:" +
+      searchText.current.value +
+      ".only give me name of 5 movies,comma seperated like example result give ahead.Example result:Gadar,Koi mil gaya,Animal,Jawaan,Pathan";
 
-      const promiesAll = dummyMovies.map(movie=>searchMovieTMDB(movie));
-      const tmdbResult=await Promise.all(promiesAll);
-      dispatch(addGptMovieResults({movieNames:dummyMovies,movieResults:tmdbResult}));
+    const result = await model.generateContent(gptQuery);
+    const response = await result.response;
+    const text = response.text();
+    const fr = text.split(",");
+
+    console.log(fr);
+
+    const promiseArray = fr.map((movie) => searchMovieTMDB(movie));
+
+    const tmdbresult = await Promise.all(promiseArray);
+
+    console.log(tmdbresult);
+
+    dispatch(addGptMovieResults({ movieNames: fr, movieResults: tmdbresult }));
+
+    // const dummyMovies=["Raaz","Hera Pheri","Chupke Chupke","Jaane Bhi Do Yaaro","Padosan"]
+
+    //   const promiesAll = dummyMovies.map(movie=>searchMovieTMDB(movie));
+    //   const tmdbResult=await Promise.all(promiesAll);
+    //   dispatch(addGptMovieResults({movieNames:dummyMovies,movieResults:tmdbResult}));
       
   };
 
